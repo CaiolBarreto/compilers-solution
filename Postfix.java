@@ -5,6 +5,8 @@ import java.util.*;
 import stacker.rpn.lexer.Token;
 import stacker.rpn.lexer.TokenType;
 
+import static stacker.rpn.lexer.Regex.getOPTokenType;
+
 public class Postfix {
     public static boolean isNumeric(String str) {
         try {
@@ -15,22 +17,6 @@ public class Postfix {
         }
     }
 
-    public static TokenType getTokenType(String tokenType) {
-        if (isNumeric(tokenType)) {
-            return TokenType.NUM;
-        } else if (Objects.equals(tokenType, "+")) {
-            return TokenType.PLUS;
-        } else if (Objects.equals(tokenType, "-")) {
-            return TokenType.MINUS;
-        } else if (Objects.equals(tokenType, "*")) {
-            return TokenType.STAR;
-        } else if (Objects.equals(tokenType, "/")) {
-            return TokenType.SLASH;
-        } else {
-            return TokenType.EOF;
-        }
-    }
-
     public static List<Token> readFile(String filename) {
         List<Token> tokenArray = new ArrayList<Token>();
         try {
@@ -38,8 +24,8 @@ public class Postfix {
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                TokenType tokenType = getTokenType(data);
-                if (tokenType == TokenType.EOF) {
+                TokenType tokenType = getOPTokenType(data);
+                if ((tokenType == null) && !isNumeric(data)) {
                     throw new Exception("Error: Unexpected character: " + data);
                 } else {
                     tokenArray.add(new Token(tokenType, data));
